@@ -1,0 +1,86 @@
+import java.awt.*;
+import javax.swing.*;
+
+public class InventoryManagementSystem extends JFrame {
+    private DefaultListModel<String> itemListModel;
+    private JList<String> itemList;
+    private JTextField itemNameField;
+
+    public InventoryManagementSystem() {
+        setTitle("Inventory Management System");
+        setSize(400, 300);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new BorderLayout());
+
+        // Top panel for adding new items
+        JPanel topPanel = new JPanel();
+        itemNameField = new JTextField(20);
+        JButton addButton = new JButton("Add Item");
+        topPanel.add(new JLabel("Item Name:"));
+        topPanel.add(itemNameField);
+        topPanel.add(addButton);
+
+
+        // Center panel for displaying the list
+        itemListModel = new DefaultListModel<>();
+        itemList = new JList<>(itemListModel);
+        JScrollPane scrollPane = new JScrollPane(itemList);
+
+
+        // Bottom panel for updating and deleting items
+        JPanel bottomPanel = new JPanel();
+        JButton updateButton = new JButton("Update Selected");
+        JButton deleteButton = new JButton("Delete Selected");
+        bottomPanel.add(updateButton);
+        bottomPanel.add(deleteButton);
+
+
+        add(topPanel, BorderLayout.NORTH);
+        add(scrollPane, BorderLayout.CENTER);
+        add(bottomPanel, BorderLayout.SOUTH);
+
+        // Action listeners
+        addButton.addActionListener(e -> addItem());
+        updateButton.addActionListener(e -> updateItem());
+        deleteButton.addActionListener(e -> deleteItem());
+
+        setVisible(true);
+    }
+
+    private void addItem() {
+        String itemName = itemNameField.getText().trim();
+        if (!itemName.isEmpty()) {
+            itemListModel.addElement(itemName);
+            itemNameField.setText("");
+        } else {
+            JOptionPane.showMessageDialog(this, "Item name cannot be empty!");
+        }
+    }
+
+    private void updateItem() {
+        int selectedIndex = itemList.getSelectedIndex();
+        if (selectedIndex != -1) {
+            String newName = JOptionPane.showInputDialog(this, "Enter new item name:");
+            if (newName != null && !newName.trim().isEmpty()) {
+                itemListModel.set(selectedIndex, newName.trim());
+            } else {
+                JOptionPane.showMessageDialog(this, "Item name cannot be empty!");
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Please select an item to update.");
+        }
+    }
+
+    private void deleteItem() {
+        int selectedIndex = itemList.getSelectedIndex();
+        if (selectedIndex != -1) {
+            itemListModel.remove(selectedIndex);
+        } else {
+            JOptionPane.showMessageDialog(this, "Please select an item to delete.");
+        }
+    }
+
+    public static void main(String[] args) {
+        new InventoryManagementSystem();
+    }
+}
